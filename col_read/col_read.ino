@@ -53,7 +53,8 @@ void loop() {
 
 void commandRead() {
   if (Serial.available()) {
-    int inCol = Serial.read() - 48;
+     //int inCol = Serial.read() - 48
+    int inCol = Serial.read() - '0';
     if (inCol >= 0 && inCol <= 6) {
       dispenseInCol(inCol);
     }
