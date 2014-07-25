@@ -41,15 +41,25 @@ public class SimpleBoard{
         if ( (pos<0) || (pos >6))
             System.out.println("invalid input\n\n");
         else{
-            if ((cols[pos]==6) && out)
+        	if ((cols[pos]==6) && out)
                 System.out.println("Column full");
             else{
             m_y=pos;
             movelist+=(new Integer(pos)).toString();
             m_x= 5-cols[pos];
-            cols[pos]++; 
+            cols[pos]++;
             loc[m_x][m_y] = next_player;
             next_player = 3-next_player;
+        	
+        	
+        	
+            
+            m_y=pos;
+            movelist+=(new Integer(pos)).toString();
+            m_x= 5-AggressivePlayer.COLS[pos];
+            AggressivePlayer.COLS[pos]++; 
+            loc[m_x][m_y] = AggressivePlayer.NEXT_PLAYER;
+            AggressivePlayer.NEXT_PLAYER = 3-AggressivePlayer.NEXT_PLAYER;
             }
         }
         
@@ -133,8 +143,6 @@ public class SimpleBoard{
 
               return true;
             } 
-        
-        
         int z=0;
         for (int i=0; i<6; i++)
             for (int j=0; j<7; j++)
@@ -149,7 +157,82 @@ public class SimpleBoard{
             
         return false;
     }
-    
+
+    public boolean overC() {
+        String line_x="";
+        String line_y="";
+        String line_ld=(new Integer(loc[m_x][m_y])).toString();
+        String line_rd=(new Integer(loc[m_x][m_y])).toString();
+        String s = (new Integer(3-next_player)).toString();
+        String sub = s+s+s+s;
+        String match ="[012]*"+sub+"[012]*";
+        for (int i=0; i<7; i++){
+            int cell = loc[m_x][i];
+            line_x+= (new Integer(cell)).toString();
+        }
+        for (int i=0; i<6; i++){
+            int cell = loc[i][m_y];
+            line_y+= (new Integer(cell)).toString();
+        }
+        
+        int tempx=m_x;
+        int tempy=m_y;
+        while ( (tempx>0) && (tempy>0)){
+            tempx--;tempy--;
+            line_ld = (new Integer(loc[tempx][tempy])).toString() + line_ld;
+        }
+        
+        tempx=m_x;tempy=m_y;
+        while ( (tempx <5)&& (tempy <6)) {
+            tempx++;tempy++;
+            line_ld = line_ld+(new Integer(loc[tempx][tempy])).toString();
+        }
+        
+        tempx=m_x;tempy=m_y;
+        while ( (tempx>0) && (tempy<6)){
+            tempx--;tempy++;
+            line_rd = (new Integer(loc[tempx][tempy])).toString() + line_rd;
+        }
+        
+        tempx=m_x;tempy=m_y;
+        while ( (tempx <5)&& (tempy >0)) {
+            tempx++;tempy--;
+            line_rd = line_rd+(new Integer(loc[tempx][tempy])).toString();
+        }
+        
+        /*System.out.println(line_x);
+        System.out.println(line_y);
+        System.out.println(line_ld);
+        System.out.println(line_rd);
+        System.out.println(sub);*/
+        
+        if  ( (line_x.matches(match)) ||
+            (line_y.matches(match)) ||
+            (line_ld.matches(match)) ||
+            (line_rd.matches(match)) )
+            {
+              winner = 3 - next_player;
+              /*if (out){
+              System.out.print("\nPlayer ");
+              System.out.print(new Integer(winner));
+              System.out.println(" won!");}*/
+
+              return true;
+            } 
+        int z=0;
+        for (int i=0; i<6; i++)
+            for (int j=0; j<7; j++)
+              if (loc[i][j] == 0)  z = 1;
+            
+        if (z == 0)
+        {
+            /*if (out)
+                System.out.println("Draw!");*/
+            return true;
+        }
+            
+        return false;
+    }
     
     
     public String toString(){

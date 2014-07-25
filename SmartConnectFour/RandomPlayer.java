@@ -23,13 +23,14 @@ public class RandomPlayer implements Player{
 	public int getType() {
 			return 1;
 		}
-    public void go(SimpleBoard b) {
+    public int go(SimpleBoard b) {
         int m= (int) (Math.random()*7);
         
         while (b.cols[m]==6) m=(int) (Math.random()*7);
         
         //System.out.println(m);        
         b.Move(m);
+        return m;
     }
     
 }

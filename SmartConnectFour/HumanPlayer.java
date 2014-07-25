@@ -25,7 +25,7 @@ public class HumanPlayer implements Player{
     	return 0;
     }
     
-    public void go(SimpleBoard b) {
+    public int go(SimpleBoard b) {
            int n = 0;
            InputStreamReader isr = new InputStreamReader( System.in );
            BufferedReader br = new BufferedReader( isr );
@@ -44,8 +44,10 @@ public class HumanPlayer implements Player{
            if ((m != -1) && (m != -2)) {
            	//System.out.println(m);
            	b.Move(m);
+           	return m;
            } else {
            	b.Move(n);
+           	return n;
            	//System.out.println(n);
            }
     }

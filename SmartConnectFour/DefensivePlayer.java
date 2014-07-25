@@ -27,7 +27,7 @@ public class DefensivePlayer implements Player {
 			return 2;
 		}
 		
-    public void go(SimpleBoard b) {
+    public int go(SimpleBoard b) {
         int[][] bo=b.view();
         int[] c = b.ret_col();
         int me = b.next();
@@ -162,5 +162,6 @@ public class DefensivePlayer implements Player {
         //System.out.println();
         //System.out.println(mm);
         b.Move(mm);
+        return mm;
     }
 }

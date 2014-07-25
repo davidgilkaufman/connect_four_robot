@@ -358,7 +358,7 @@ public class MinMaxPlayer implements Player {
         return 4;
     }
     
-    public void go(SimpleBoard b) {
+    public int go(SimpleBoard b) {
         State current_state = new State();
 
         current_state.ParseMove(b.movelist);
@@ -367,6 +367,7 @@ public class MinMaxPlayer implements Player {
         int m = MinimaxDecision(current_state);
         //System.out.println(m);
         b.Move(m);
+        return m;
         
     }
     
