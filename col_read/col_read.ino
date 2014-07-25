@@ -5,7 +5,7 @@ const int NUM_ROW = 6;
 const int NUM_COL = 7;
 int board[NUM_ROW][NUM_COL];
 int cols[NUM_COL];
-int nextPlayer = 1;
+int nextPlayer = 2;
 int aiPlayer = 1;
 
 
@@ -18,6 +18,8 @@ const int sensorPins[numSensors] = {
 const int colSelectorServoPin = 49;
 const int servoPositions[] = {0, 6, 12, 18, 24, 32, 38};
 const int dispenserServoPin = 51;
+const int dispenserOpen = 100;
+const int dispenserClosed = 45;
 
 // Detection parameters.
 const int checkLoopMS = 0;
@@ -110,7 +112,7 @@ void boardRead() {
     int newState = confirmState(i, reading, lastConfirmedState[i]);
     if(newState != lastConfirmedState[i]) {
       lastConfirmedState[i] = newState;
-      if (newState && !lastConfirmedState[i]) {
+      if (newState) {
         // rising edge (when a piece blocks the sensor)
         updateBoardWithMove(i);
       }
@@ -155,6 +157,8 @@ void updateBoardWithMove(int col) {
       board[m_x][col] = nextPlayer;
       nextPlayer = 3-nextPlayer;
     }
+    printBoard();
+    Serial.print(nextPlayer);
   }
 }
 
@@ -211,7 +215,8 @@ bool gameOver() {
 void printBoard(){
   Serial.println("   0 1 2 3 4 5 6");
   for (int i = 0; i < 6; i++){
-    Serial.print(i+ ": ");
+    Serial.print(i);
+    Serial.print(": ");
     for (int j = 0; j< 7; j++){
       Serial.print(board[i][j]);
       Serial.print(" ");
@@ -463,6 +468,6 @@ int aiMove() {
     if (h[i]>max) {max=h[i]; mm=i;}
     sum= sum+h[i];
   }
-  if (sum==0) mm = (int) (random()*NUM_COL);
+  if (sum==0) mm = (int) (random(NUM_COL));
   return mm;
 }
