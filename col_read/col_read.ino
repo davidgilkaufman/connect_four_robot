@@ -6,9 +6,9 @@ const int sensorPins[numSensors] = {
   0, 15};
 
 // Servo config.
-const int colSelectorServoPin = 51;
-const int colDegree = 10;
-const int dispenserServoPin = 49;
+const int colSelectorServoPin = 49;
+const int colDegree = 6;
+const int dispenserServoPin = 51;
 
 // Detection parameters.
 const int checkLoopMS = 1;
@@ -62,14 +62,14 @@ void commandRead() {
 }
 
 void dispenseInCol(int col) {
-    colSelectorServo.write((col + 1) * colDegree);
-    delay(rampRotateMS);
-    dispenserServo.write(90);
-    delay(dispenseMS);
-    delay(coinRollMS);
-    dispenserServo.write(0);
-    colSelectorServo.write(0);
-    delay(rampRotateMS);
+  colSelectorServo.write((col + 1) * colDegree);
+  delay(rampRotateMS);
+  dispenserServo.write(90);
+  delay(dispenseMS);
+  delay(coinRollMS);
+  dispenserServo.write(0);
+  colSelectorServo.write(0);
+  delay(rampRotateMS);
 }
 
 void boardRead() {
@@ -79,7 +79,7 @@ void boardRead() {
     int newState = confirmState(i, reading, lastConfirmedState[i]);
     if(newState != lastConfirmedState[i]) {
       lastConfirmedState[i] = newState;
-
+      // Only print when the column becomes unblocked again.
       if (newState == 0) {
         Serial.println(i);
       }
@@ -92,6 +92,7 @@ int confirmState(int i, int reading, int lastConfirmedState) {
     lastReadingChangeMS[i] = millis();
   }
   int confirmedState = lastConfirmedState;
+  // A reading is only confirmed when it's been in that state for more than debounceDelayMS.
   if ((millis() - lastReadingChangeMS[i]) > debounceDelayMS) {
     confirmedState = reading;
   }
