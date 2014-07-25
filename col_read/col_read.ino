@@ -10,9 +10,9 @@ int aiPlayer = 1;
 
 
 // Sensor config.
-const int numSensors = 2;
+const int numSensors = 7;
 const int sensorPins[numSensors] = {
-  0, 15};
+  0, 1, 2, 3, 4, 5, 6};
 
 // Servo config.
 const int colSelectorServoPin = 49;
@@ -20,9 +20,10 @@ const int servoPositions[] = {0, 6, 12, 18, 24, 32, 38};
 const int dispenserServoPin = 51;
 
 // Detection parameters.
-const int checkLoopMS = 1;
-const int debounceDelayMS = 50;
-const int detectionThreshold = 865;
+const int checkLoopMS = 0;
+const int debounceDelayMS = 0;
+const int thresholdPerSensor[numSensors] = {
+  850, 975, 125, 975, 800, 800, 850};
 
 // Ramp physics parameters.
 const int rampRotateMS = 1000;
@@ -45,7 +46,7 @@ void clearBoard() {
       board[row][col]=0;
     }
   for (int col = 0 ; col < NUM_COL; col++)
-    cols[col] = 0;        
+    cols[col] = 0;
 }
 
 void setup() {
@@ -105,8 +106,7 @@ void dispenseInCol(int col) {
 
 void boardRead() {
   for (int i = 0; i < numSensors; i++) {
-    int sensorPin = sensorPins[i];
-    int reading = getReading(sensorPin);
+    int reading = getReading(i);
     int newState = confirmState(i, reading, lastConfirmedState[i]);
     if(newState != lastConfirmedState[i]) {
       lastConfirmedState[i] = newState;
@@ -116,6 +116,7 @@ void boardRead() {
       }
     }
   }
+//  Serial.println("");
 }
 
 int confirmState(int i, int reading, int lastConfirmedState) {
@@ -131,9 +132,14 @@ int confirmState(int i, int reading, int lastConfirmedState) {
   return confirmedState;
 }
 
-int getReading(int sensorPin) {
+int getReading(int i) {
+  int sensorPin = sensorPins[i];
   int val = analogRead(sensorPin);
-  int reading = (int)(val > detectionThreshold);
+//  Serial.print(i);
+//  Serial.print("=");
+//  Serial.print(val);
+//  Serial.print(" ");
+  int reading = (int)(val > thresholdPerSensor[i]);
   return reading;
 }
 
@@ -145,7 +151,7 @@ void updateBoardWithMove(int col) {
       Serial.println("Column full");
     else{
       int m_x= 5-cols[col];
-      cols[col]++; 
+      cols[col]++;
       board[m_x][col] = nextPlayer;
       nextPlayer = 3-nextPlayer;
     }
